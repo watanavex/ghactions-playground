@@ -25,7 +25,7 @@ jobs:
         PULL_REQUEST_FROM_BRANCH: release/${{ steps.date.outputs.date }}
         PULL_REQUEST_TITLE: Deploy to production by ${{ github.actor }}
         PULL_REQUEST_BODY: |
-          "### 以下問題なければマージしてください
+          ### 以下問題なければマージしてください
           - [ ] Podspecのバージョンが正しく更新されていること
           - [ ] 配信されたサンプルアプリでの動作確認
-          - [ ] CHANGELOG.md のリリース日付が正しく設定されていること"
+          - [ ] CHANGELOG.md のリリース日付が正しく設定されていること
