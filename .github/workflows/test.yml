@@ -17,13 +17,10 @@ jobs:
       run: |
         git checkout -b release/${{ steps.date.outputs.date }}
         git push origin -u release/${{ steps.date.outputs.date }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v3.11.0
       with:
         title: Deploy to production by ${{ github.actor }}
-        branch: release/${{ steps.date.outputs.date }}
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         base: main
         token: ${{ secrets.GITHUB_TOKEN }}
