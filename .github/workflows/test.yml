@@ -1,0 +1,12 @@
+name: "Get Ready for Release"
+on:
+  workflow_dispatch:
+    branches:
+    - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: echo
+      run: echo "hogehoge"
