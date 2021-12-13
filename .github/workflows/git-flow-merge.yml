@@ -1,0 +1,24 @@
+name: "Git-flow merge"
+on:
+  pull_request:
+    branches:
+      - master
+    types: [closed]
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+    - uses: actions/checkout@v1
+    - name: Extract branch name
+      uses: mdecoleman/pr-branch-name@1.0.0
+      id: extract_branch
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+    - run: echo ${{ steps.extract_branch.outputs.branch }}
+    - uses: yanamura/git-flow-merge-action@v1
+      with: 
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ steps.extract_branch.outputs.branch }}
+        
