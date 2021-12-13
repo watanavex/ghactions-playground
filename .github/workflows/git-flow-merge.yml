@@ -3,12 +3,12 @@ on:
   pull_request:
     branches:
       - main
-    types: [closed]
+    types: [labeled]
 
 jobs:
   automerge:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: github.event.label.name == 'release'
     steps:
     - uses: actions/checkout@v1
     - name: Extract branch name
