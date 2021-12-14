@@ -1,32 +1,20 @@
 name: "Git-flow merge"
 on:
-  issue_comment:
-    types: [created, edited]
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 jobs:
-  automerge:
+  auto-merge:
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/release')
+    if: github.event.pull_request.merged == true
     steps:
-    - name: Getting PR data
-      id: pr_data
-      uses: octokit/request-action@v2.1.0
-      with:
-        route: GET /repos/{owner}/{repo}/pulls/{pull_number}
-        owner: watanavex
-        repo: ghactions-playground
-        pull_number: ${{ github.event.issue.number }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: echo ${{ github.event.issue.pull_request }}
-    - run: echo ${{ fromJson(steps.pr_data.outputs.data).head.ref }}
-    - name: Checkout PRed branch
+    - run: git fetch
+    - name: Checkout develop
       uses: actions/checkout@v2
       with:
-        ref: ${{ fromJson(steps.pr_data.outputs.data).head.ref }}
-    - uses: yanamura/git-flow-merge-action@v1
-      with: 
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ fromJson(steps.pr_data.outputs.data).head.ref }}
-        main_branch: 'main'
-        develop_branch: 'develop'
+        ref: develop
+    - name: Merge to develop
+      run: |
+        git merge ${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
+        git push
