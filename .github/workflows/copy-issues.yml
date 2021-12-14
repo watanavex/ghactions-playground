@@ -1,7 +1,6 @@
 name: "Copy issues"
 on:
   workflow_dispatch:
-  push:
 
 jobs:
   get-issue-labels:
