@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-    - run: git fetch
     - name: Checkout develop
       uses: actions/checkout@v2
       with:
         ref: develop
+    - run: git fetch
     - name: Merge to develop
       run: |
         git merge ${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
