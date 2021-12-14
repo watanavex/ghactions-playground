@@ -22,5 +22,7 @@ jobs:
         git fetch
     - name: Merge to develop
       run: |
-        git merge ${{ github.event.pull_request.head.sha }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
+        git checkout ${{ github.event.pull_request.head.sha }} -b ${{ github.head_ref }}
+        git checkout develop
+        git merge ${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
         git push
