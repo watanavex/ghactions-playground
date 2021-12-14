@@ -1,7 +1,7 @@
 name: "Git-flow merge"
 on:
   pull_request:
-    types: [closed]
+    # types: [closed]
     # branches: [main]
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     steps:
     # - name: Configure Git
     #   run: |
@@ -19,7 +19,7 @@ jobs:
     - name: Checkout develop
       uses: actions/checkout@v2
       with:
-        ref: develop
+        ref: sample
     - run: git fetch
     - name: Merge to develop
       run: |
