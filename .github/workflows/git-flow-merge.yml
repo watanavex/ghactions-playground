@@ -12,15 +12,15 @@ jobs:
       id-token: write
     # if: github.event.pull_request.merged == true
     steps:
-    - name: Configure Git
-      run: |
-        git config user.email "git@users.noreply.github.com"
-        git config user.name "${{ github.actor }}"
     - name: Checkout develop
       uses: actions/checkout@v2
       with:
         ref: sample
-    - run: git fetch
+    - name: Configure Git
+      run: |
+        git config user.email "git@users.noreply.github.com"
+        git config user.name "${{ github.actor }}"
+        git fetch
     - name: Merge to develop
       run: |
         git merge remotes/origin/${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
