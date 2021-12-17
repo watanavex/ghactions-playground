@@ -1,0 +1,17 @@
+name: "Create XCFramework and Deploy Swift-PM"
+on:
+  pull_request:
+   branches:
+    - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+        with:
+          ref: main
