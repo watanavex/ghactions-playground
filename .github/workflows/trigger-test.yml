@@ -1,8 +1,9 @@
 name: "Create XCFramework and Deploy Swift-PM"
 on:
-  pull_request:
-   branches:
-    - main
+  push:
+    branches:
+    - release/*
+    - hotfix/*
 
 jobs:
   build:
