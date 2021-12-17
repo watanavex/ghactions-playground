@@ -24,7 +24,7 @@ jobs:
     - name: Pull Request Action
       uses: vsoch/pull-request-action@1.0.18
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: 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
         PULL_REQUEST_BRANCH: main
         PULL_REQUEST_FROM_BRANCH: release/${{ steps.date.outputs.date }}
         PULL_REQUEST_TITLE: Deploy to production by ${{ github.actor }}
@@ -33,10 +33,10 @@ jobs:
           - [ ] Podspecのバージョンが正しく更新されていること
           - [ ] 配信されたサンプルアプリでの動作確認
           - [ ] CHANGELOG.md のリリース日付が正しく設定されていること
-    - name: Update
-      run: |
-        sleep 10
-        echo test >> test.txt
-        git add test.txt
-        git commit -m "Update"
-        git push
+    # - name: Update
+    #   run: |
+    #     sleep 10
+    #     echo test >> test.txt
+    #     git add test.txt
+    #     git commit -m "Update"
+    #     git push
