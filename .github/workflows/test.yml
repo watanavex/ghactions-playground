@@ -10,6 +10,10 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: develop
+    - name: Configure Git
+      run: |
+        git config user.email "git@users.noreply.github.com"
+        git config user.name "github actions"
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y.%m.%dT%H.%M.%S')"
@@ -29,3 +33,10 @@ jobs:
           - [ ] Podspecのバージョンが正しく更新されていること
           - [ ] 配信されたサンプルアプリでの動作確認
           - [ ] CHANGELOG.md のリリース日付が正しく設定されていること
+    - name: Update
+      run: |
+        sleep 10
+        echo test >> test.txt
+        git add test.txt
+        git commit -m "Update"
+        git push
