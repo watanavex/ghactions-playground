@@ -26,3 +26,8 @@ jobs:
         git checkout develop
         git merge ${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
         git push
+    - name: Merge to main
+      run: |
+        git checkout ref/origin/master
+        git merge ${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into main"
+        git push
