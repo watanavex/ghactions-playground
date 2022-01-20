@@ -1,0 +1,26 @@
+name: "Auto merge"
+on:
+  pull_request:
+    types: [edited]
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: 8BitJonny/gh-get-current-pr@1.3.0
+      id: get_pr_data
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        sha: ${{ github.event.pull_request.head.sha }}
+        filterOutClosed: true
+    - id: completed_check
+      run: |
+        echo ${prBody}
+        echo ${prBody} | grep "- [ ]"
+        echo "::set-output name=result::${result}"
+      if: success() && steps.PR.outputs.number
+      env:
+        prBody: ${{ steps.PR.outputs.pr_body }}
+    - run: echo "${{ steps.completed_check.outputs.result }}"
