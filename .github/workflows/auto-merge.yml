@@ -15,12 +15,33 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         sha: ${{ github.event.pull_request.head.sha }}
         filterOutClosed: true
-    - id: completed_check
-      run: |
-        echo ${prBody}
-        echo ${prBody} | grep "- [ ]"
-        echo "::set-output name=result::${result}"
-      if: success() && steps.PR.outputs.number
+    - name: Getting PRs
+      id: get_pulls
+      uses: octokit/request-action@v2.1.0
+      with:
+        route: GET /repos/${{ github.repository }}/pulls
+        state: open
+        base: ${{ github.base_ref }}
+        head: ${{ github.head_ref }}
       env:
-        prBody: ${{ steps.PR.outputs.pr_body }}
-    - run: echo "${{ steps.completed_check.outputs.result }}"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check of Completion
+      id: check_of_completion
+      run: |
+        length=$(echo '${{ steps.get_pulls.outputs.data }}' | jq -r '. | length')
+        if [ $length != "1" ]; then
+          exit 1
+        fi
+
+        body=$(echo '${{ steps.get_pulls.outputs.data }}' | jq -r '.[0].body')
+        incomplete_task=$(echo $body | sed -n "/\- \[ \]/ p")
+        if [ -z $incomplete_task ]; then
+          echo "::set-output name=completed::true"
+        else
+          echo "::set-output name=completed::false"
+        fi
+    - name: Merge Branches
+      if: ${{ steps.check_of_completion.outputs.completed == 'true' }}
+      run: echo "${{ steps.check_of_completion.outputs.result }}"
+
+    
