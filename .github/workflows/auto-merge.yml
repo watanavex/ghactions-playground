@@ -22,7 +22,6 @@ jobs:
       with:
         route: GET /repos/${{ github.repository }}/pulls
         state: open
-        base: ${{ github.base_ref }}
         head: ${{ github.head_ref }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
