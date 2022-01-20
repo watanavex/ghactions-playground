@@ -2,6 +2,7 @@ name: "Auto merge"
 on:
   pull_request:
     types: [edited]
+    branches: [main]
 
 jobs:
   auto-merge:
@@ -40,8 +41,28 @@ jobs:
         else
           echo "::set-output name=completed::false"
         fi
-    - name: Merge Branches
+    - run: echo "Perform merge steps"
       if: ${{ steps.check_of_completion.outputs.completed == 'true' }}
-      run: echo "${{ steps.check_of_completion.outputs.result }}"
-
-    
+    - name: Checkout develop
+      uses: actions/checkout@v2
+      with:
+        ref: develop
+    - name: Configure Git
+      run: |
+        git config user.email "git@users.noreply.github.com"
+        git config user.name "${{ github.actor }}"
+        git fetch
+    - name: Merge to develop
+      run: |
+        git checkout ${{ github.event.pull_request.head.sha }} -b ${{ github.head_ref }}
+        git checkout develop
+        git merge ${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
+        git push
+    - name: Checkout main
+      uses: actions/checkout@v2
+      with:
+        ref: main
+    - name: Merge to main
+      run: |
+        git merge ${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into main"
+        git push
