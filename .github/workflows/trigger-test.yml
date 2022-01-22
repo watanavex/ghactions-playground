@@ -19,5 +19,5 @@ jobs:
         git config user.name "${{ github.actor }}"
         echo "run on gh actions" >> test.txt
         git add .
-        git co -m "co"
+        git commit -m "mod"
         git push
