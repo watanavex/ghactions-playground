@@ -57,23 +57,23 @@ jobs:
         git config user.email "git@users.noreply.github.com"
         git config user.name "${{ github.actor }}"
         git fetch
-    - name: Getting PRs
-      id: get_pulls
-      uses: octokit/request-action@v2.1.0
-      with:
-        route: PUT /repos/${{ github.repository }}/pulls/62/merge
-        merge_method: merge
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    # - name: Merge to develop
-    #   run: |
-    #     git checkout develop
-    #     git merge origin/${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
-    # - name: Push to develop
-    #   uses: CasperWA/push-protected@v2
+    # - name: Getting PRs
+    #   id: get_pulls
+    #   uses: octokit/request-action@v2.1.0
     #   with:
-    #     token: ${{ secrets.GH_ACCESS_TOKEN }}
-    #     branch: develop
+    #     route: PUT /repos/${{ github.repository }}/pulls/62/merge
+    #     merge_method: merge
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Merge to develop
+      run: |
+        git checkout develop
+        git merge origin/${{ github.head_ref }} --no-ff -m "Merge ${{ github.head_ref }} into develop"
+    - name: Push to develop
+      uses: CasperWA/push-protected@v2
+      with:
+        token: ${{ secrets.GH_ACCESS_TOKEN }}
+        branch: develop
     # - name: Merge to main
     #   run: |
     #     git checkout main
