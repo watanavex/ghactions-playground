@@ -1,0 +1,38 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Description of what the lane does"
+  lane :sample do
+    api_key = app_store_connect_api_key(
+      key_id: ENV['ASC_KEY_ID'], # your key id
+      issuer_id: ENV['ASC_ISSUER_ID'], # your issuer id
+      key_content: ENV['ASC_KEY_CONTENT'], # your secret key body
+    )
+
+    match(
+      api_key: api_key, # pass api_key
+      app_identifier: 'tech.watanave.deploy',
+      type: "development",
+      readonly: false,
+      git_url: "ssh://github.com/watanavex/match.git"
+    )
+
+    puts api_key
+  end
+end
+
