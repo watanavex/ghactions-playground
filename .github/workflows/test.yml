@@ -1,15 +1,29 @@
-name: "Get Ready for Release"
+name: "AppStoreConnect API"
+
 on:
-  push
+  push:
+    branches: [app_store_connect]
 
 jobs:
   build:
     runs-on: macos-latest
     steps:
-    - name: Checkout
+    - name: Checkout develop
       uses: actions/checkout@v2
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: ./vendor
+        key: gem-${{ hashFiles('Gemfile.lock') }}
+        restore-keys: gem
     - name: fastlane
       run: |
+        export MATCH_GIT_BASIC_AUTHORIZATION=$(echo -n "watanavex:$GH_ACCESS_TOKEN" | base64)
         bundle install --path ./vendor/bundle
         bundle exec fastlane sample
-
+      env:
+        ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}

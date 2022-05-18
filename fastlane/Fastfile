@@ -29,7 +29,7 @@ platform :ios do
       app_identifier: 'tech.watanave.deploy',
       type: "development",
       readonly: false,
-      git_url: "ssh://github.com/watanavex/match.git"
+      git_url: "https://github.com/watanavex/match.git"
     )
 
     puts api_key
