@@ -1,42 +1,41 @@
-name: "Get Ready for Release"
+name: "Git-flow merge"
 on:
-  workflow_dispatch
+  pull_request:
+    types: [edited]
+    branches: [master]
 
 jobs:
-  build:
+  check_that_current_pr_is_complete:
+    if: ${{ github.repository != 'plaidev/karte-ios-sdk' && github.event.pull_request.state == 'open' }}
+    permissions:
+      pull-requests: read
     runs-on: ubuntu-latest
+    outputs:
+      completed: ${{ steps.check_completion.outputs.completed }}
     steps:
-    - name: Checkout develop
-      uses: actions/checkout@v2
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.1
       with:
-        ref: develop
-    - name: Configure Git
+        access_token: ${{ secrets.GH_ACCESS_TOKEN }}
+        all_but_latest: true
+    - name: Check Completion
+      id: check_completion
       run: |
-        git config user.email "git@users.noreply.github.com"
-        git config user.name "github actions"
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y.%m.%dT%H.%M.%S')"
-    - name: Create release branch
-      run: |
-        git checkout -b release/${{ steps.date.outputs.date }}
-        git push origin -u release/${{ steps.date.outputs.date }}
-    - name: Pull Request Action
-      uses: vsoch/pull-request-action@1.0.18
-      env:
-        GITHUB_TOKEN: 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
-        PULL_REQUEST_BRANCH: main
-        PULL_REQUEST_FROM_BRANCH: release/${{ steps.date.outputs.date }}
-        PULL_REQUEST_TITLE: Deploy to production by ${{ github.actor }}
-        PULL_REQUEST_BODY: |
-          ### 以下問題なければマージしてください
-          - [ ] Podspecのバージョンが正しく更新されていること
-          - [ ] 配信されたサンプルアプリでの動作確認
-          - [ ] CHANGELOG.md のリリース日付が正しく設定されていること
-    # - name: Update
-    #   run: |
-    #     sleep 10
-    #     echo test >> test.txt
-    #     git add test.txt
-    #     git commit -m "Update"
-    #     git push
+        body=$(echo '${{ github.event.pull_request.body }}')
+        incomplete_task=$(echo $body | sed -n "/\- \[ \]/ p")
+        if [ -z $incomplete_task ]; then
+            echo "::set-output name=completed::true"
+        else
+            echo "::set-output name=completed::false"
+        fi
+
+  perform_merge:
+    permissions:
+      contents: write
+    needs: [check_that_current_pr_is_complete]
+    runs-on: ubuntu-latest
+    if: needs.check_that_current_pr_is_complete.outputs.completed == 'true'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - run: echo "hoge"
