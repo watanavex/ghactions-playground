@@ -2,7 +2,7 @@ name: "Git-flow merge"
 on:
   pull_request:
     types: [edited]
-    branches: [master]
+    branches: [develop]
 
 jobs:
   check_that_current_pr_is_complete:
